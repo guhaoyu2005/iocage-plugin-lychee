@@ -23,14 +23,14 @@ sed -i '' 's/.*listen = 127.0.0.1:9000.*/listen = \/tmp\/php7.4-fpm.sock/' /usr/
 # Generate sql credential
 USER="lychee"
 DB="lychee"
-PASS=`cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 16 | head -n 1`
 export LC_ALL=C
+PASS=`cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 16 | head -n 1`
 
 # Write credential into plugin_config file
 echo "Database Name: $DB" > /root/PLUGIN_INFO
 echo "Database User: $USER" >> /root/PLUGIN_INFO
 echo "Database Password: $PASS" >> /root/PLUGIN_INFO
-echo "Nextcloud Admin Password: $PASS" >> /root/PLUGIN_INFO
+echo "Database Admin Password: $PASS" >> /root/PLUGIN_INFO
 
 # Fetch lychee
 mkdir /usr/local/www/lychee
@@ -68,8 +68,8 @@ sed -i '' "s/DB_USERNAME=.*/DB_USERNAME=${USER}/" /usr/local/www/lychee/.env
 sed -i '' "s/DB_PASSWORD=.*/DB_PASSWORD=${PASS}/" /usr/local/www/lychee/.env
 
 cd /usr/local/www/lychee/
-php artisan key:generate
-php artisan migrate
+echo "yes" | php artisan key:generate
+echo "yes" | php artisan migrate
 
 # Start nginx
 service nginx start
