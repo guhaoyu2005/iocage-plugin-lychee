@@ -14,6 +14,7 @@
         "nginx",
         "php74",
         "php74-composer",
+	"php74-session",
         "php74-mysqli",
         "php74-exif", 
         "php74-mbstring", 
