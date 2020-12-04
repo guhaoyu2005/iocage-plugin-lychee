@@ -48,8 +48,8 @@ mysql -u root --connect-expired-password <<-EOF
 ALTER USER 'root'@'localhost' IDENTIFIED BY '${PASS}';
 ALTER USER 'mysql'@'localhost' IDENTIFIED BY '${PASS}';
 CREATE DATABASE \`${DB}\` DEFAULT CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci';
-CREATE USER '${USER}'@'localhost' IDENTIFIED BY '${PASS}';
-GRANT ALL PRIVILEGES ON ${DB}.* TO '${USER}'@'localhost';
+CREATE USER '${USER}'@'${DB}' IDENTIFIED BY '${PASS}';
+GRANT ALL PRIVILEGES ON *.* TO '${USER}'@'${DB}';
 FLUSH PRIVILEGES;
 EOF
 
@@ -63,12 +63,13 @@ cp /usr/local/www/lychee/.env.example /usr/local/www/lychee/.env
 sed -i '' 's/DB_CONNECTION=.*/DB_CONNECTION=mysql/' /usr/local/www/lychee/.env
 sed -i '' 's/DB_HOST=.*/DB_HOST=127.0.0.1/' /usr/local/www/lychee/.env
 sed -i '' 's/DB_PORT=.*/DB_PORT=3306/'  /usr/local/www/lychee/.env
-sed -i '' "s/DB_DATABASE=.*/DB_DATABASE=${DB}/"  /usr/local/www/lychee/.env
+sed -i '' "s/#DB_DATABASE=.*/DB_DATABASE=${DB}/"  /usr/local/www/lychee/.env
 sed -i '' "s/DB_USERNAME=.*/DB_USERNAME=${USER}/" /usr/local/www/lychee/.env
 sed -i '' "s/DB_PASSWORD=.*/DB_PASSWORD=${PASS}/" /usr/local/www/lychee/.env
 
 cd /usr/local/www/lychee/
 echo "yes" | php artisan key:generate
+php artisan config:cache
 echo "yes" | php artisan migrate
 
 # Start nginx
